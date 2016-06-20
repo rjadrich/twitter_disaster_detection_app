@@ -17,7 +17,7 @@ app.vars={}
 
 @app.route('/')
 def main():
-    return redirect('/ticker_input')
+    return render_template('ticker_input.html')
 
 @app.route('/ticker_input', methods=['GET','POST'])
 def index():
