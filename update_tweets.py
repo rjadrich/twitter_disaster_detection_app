@@ -1,7 +1,11 @@
 import pandas as pd
 import tweepy
+import os
 
 def fetch_tweets():
+    #get absolute path
+    MYDIR = os.path.dirname(__file__)
+    
     #key information to access the twitter api
     consumer_key = "IUZ7bZtjQmhtbh36FY4RtIqY4"
     consumer_secret = "fEYROmCU5WTInSQOYoqLLo2x5CiagQnMNu2oLEPVoUraIfh4Cq"
@@ -17,10 +21,11 @@ def fetch_tweets():
         results = api.search(q = keyword)
         for result in results:
             new_tweets.append(result.text.encode('utf-8'))
+           
         
     #place into a dataframe and write a csv file with utf8 encoded tweets 
     new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["text"])
-    new_tweets_df.to_csv(path_or_buf = 'data/tweets.csv')        
+    new_tweets_df.to_csv(path_or_buf = MYDIR + 'data/tweets.csv')        
         
     return True
 
