@@ -25,7 +25,7 @@ def fetch_tweets():
         
     #place into a dataframe and write a csv file with utf8 encoded tweets 
     new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["text"])
-    new_tweets_df.to_csv(path_or_buf = os.path.join(MYDIR, 'tweets.csv'))        
+    new_tweets_df.to_csv(path_or_buf = os.path.join(MYDIR, 'data/tweets.csv'))        
         
     return True
 
