@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify
 from bokeh.plotting import figure
 from bokeh.embed import components 
 from bokeh.palettes import Spectral6
