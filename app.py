@@ -72,7 +72,7 @@ def index():
     return render_template('ticker_input.html', script=script, div=div, message="Plotted stock %s below." % app.vars['ticker'].upper(), github=github)
 
 @app.route('/get_tweets')
-def main():
+def get_tweets():
     return rq.enqueue(fetch_tweets)
 
 if __name__ == '__main__':
