@@ -73,7 +73,7 @@ def index():
 
 @app.route('/get_tweets')
 def get_tweets():
-    return rq.enqueue(fetch_tweets)
+    return q.enqueue(fetch_tweets)
 
 if __name__ == '__main__':
     app.debug = True

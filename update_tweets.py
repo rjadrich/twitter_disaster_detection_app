@@ -6,6 +6,8 @@ def fetch_tweets():
     #get absolute path
     #MYDIR = os.path.dirname(__file__)
     
+    return "HELO"
+    
     #key information to access the twitter api
     consumer_key = "IUZ7bZtjQmhtbh36FY4RtIqY4"
     consumer_secret = "fEYROmCU5WTInSQOYoqLLo2x5CiagQnMNu2oLEPVoUraIfh4Cq"
@@ -28,6 +30,3 @@ def fetch_tweets():
     #new_tweets_df.to_csv(path_or_buf = os.path.join(MYDIR, 'data/tweets.csv'))        
         
     return new_tweets
-
-if __name__ == '__main__':
-    fetch_tweets()
