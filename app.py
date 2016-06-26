@@ -76,7 +76,7 @@ def index():
 def get_tweets():
     job = q.enqueue(fetch_tweets)
     time.sleep(2)
-    return job.result
+    return job.get_id()
 
 if __name__ == '__main__':
     app.debug = True
