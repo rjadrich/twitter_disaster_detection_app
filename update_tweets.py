@@ -4,7 +4,7 @@ import os
 
 def fetch_tweets():
     #get absolute path
-    MYDIR = os.path.dirname(__file__)
+    #MYDIR = os.path.dirname(__file__)
     
     #key information to access the twitter api
     consumer_key = "IUZ7bZtjQmhtbh36FY4RtIqY4"
@@ -24,10 +24,10 @@ def fetch_tweets():
            
         
     #place into a dataframe and write a csv file with utf8 encoded tweets 
-    new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["text"])
-    new_tweets_df.to_csv(path_or_buf = os.path.join(MYDIR, 'data/tweets.csv'))        
+    #new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["text"])
+    #new_tweets_df.to_csv(path_or_buf = os.path.join(MYDIR, 'data/tweets.csv'))        
         
-    return True
+    return new_tweets
 
 if __name__ == '__main__':
     fetch_tweets()

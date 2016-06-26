@@ -7,13 +7,18 @@ import pandas as pd
 import datetime
 import sys
 import logging
+from update_tweets import fetch_tweets 
+from rq import Queue
+from worker import conn
 
+#establish the app and logging for app
 app = Flask(__name__)
-
 app.logger.addHandler(logging.StreamHandler(sys.stdout))
 app.logger.setLevel(logging.ERROR)
-
 app.vars={}
+
+#establish the queue
+q = Queue(connection = conn)
 
 @app.route('/')
 def main():
@@ -65,6 +70,10 @@ def index():
     
     #return render_template('graph_ticker.html', script=script, div=div, header_text=header_text)
     return render_template('ticker_input.html', script=script, div=div, message="Plotted stock %s below." % app.vars['ticker'].upper(), github=github)
+
+@app.route('/get_tweets')
+def main():
+    return rq.enqueue(fetch_tweets)
 
 if __name__ == '__main__':
     app.debug = True
