@@ -7,6 +7,7 @@ import pandas as pd
 import datetime
 import sys
 import logging
+import time
 from update_tweets import fetch_tweets 
 from rq import Queue
 from worker import conn
