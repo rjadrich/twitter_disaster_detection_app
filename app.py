@@ -73,7 +73,9 @@ def index():
 
 @app.route('/get_tweets')
 def get_tweets():
-    return q.enqueue(fetch_tweets)
+    job = q.enqueue(fetch_tweets)
+    time.sleep(2)
+    return job.result
 
 if __name__ == '__main__':
     app.debug = True
