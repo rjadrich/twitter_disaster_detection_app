@@ -8,7 +8,7 @@ import datetime
 import sys
 import logging
 import time
-from update_tweets import fetch_tweets 
+#from update_tweets import fetch_tweets 
 from rq import Queue
 from worker import conn
 
@@ -20,6 +20,12 @@ app.vars={}
 
 #establish the queue
 q = Queue(connection = conn)
+
+
+
+def fetch_tweets():
+    return "HELLO"
+
 
 @app.route('/')
 def main():
@@ -75,8 +81,11 @@ def index():
 @app.route('/get_tweets')
 def get_tweets():
     job = q.enqueue(fetch_tweets)
-    time.sleep(2)
-    return job.get_id()
+    time.sleep(10)
+    return job.result
+
+
+
 
 if __name__ == '__main__':
     app.debug = True
