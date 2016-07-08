@@ -81,7 +81,7 @@ def index():
 @app.route('/get_tweets')
 def get_tweets():
     job = q.enqueue(fetch_tweets, result_ttl = 3500, timeout = 1200)
-    time.sleep(30)
+    time.sleep(10)
     return job.result
 
 
