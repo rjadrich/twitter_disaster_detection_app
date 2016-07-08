@@ -22,6 +22,6 @@ def fetch_tweets():
     new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["text"])  
         
     #create a time stamp to aid in identifying the most recent dataset of the two stored 
-    ticks = time.time()   
+    ticks = time.time()  
         
-    return (ticks, new_tweets_df)
+    return new_tweets
