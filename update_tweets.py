@@ -3,10 +3,6 @@ import tweepy
 import os
 
 def fetch_tweets():
-    #get absolute path
-    #MYDIR = os.path.dirname(__file__)
-    
-    return "HELO"
     
     #key information to access the twitter api
     consumer_key = "IUZ7bZtjQmhtbh36FY4RtIqY4"

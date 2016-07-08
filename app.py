@@ -8,7 +8,7 @@ import datetime
 import sys
 import logging
 import time
-#from update_tweets import fetch_tweets 
+from tweet_miner import fetch_tweets 
 from rq import Queue
 from worker import conn
 
@@ -23,8 +23,8 @@ q = Queue(connection = conn)
 
 
 
-def fetch_tweets():
-    return "HELLO"
+#def fetch_tweets():
+    #return "HELLO"
 
 
 @app.route('/')
@@ -80,8 +80,8 @@ def index():
 
 @app.route('/get_tweets')
 def get_tweets():
-    job = q.enqueue(fetch_tweets)
-    time.sleep(10)
+    job = q.enqueue(fetch_tweets, result_ttl = 3500, timeout = 1200)
+    time.sleep(30)
     return job.result
 
 
