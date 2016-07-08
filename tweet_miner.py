@@ -17,7 +17,7 @@ def fetch_tweets():
     for keyword in ["accident"]: #cleaned_keywords:
         results = api.search(q = keyword)
         for result in results:
-            new_tweets.append(result.text.encode('utf-8'))
+            new_tweets.append(result.text.encode('ascii', errors ="ignore"))
          
     new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["text"])  
         
