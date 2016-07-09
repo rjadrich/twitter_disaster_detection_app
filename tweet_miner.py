@@ -24,4 +24,4 @@ def fetch_tweets():
     #create a time stamp to aid in identifying the most recent dataset of the two stored 
     ticks = time.time()  
         
-    return new_tweets[0]
+    return new_tweets
