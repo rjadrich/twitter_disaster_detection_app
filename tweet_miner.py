@@ -25,11 +25,16 @@ def fetch_tweets():
     #create a time stamp to aid in identifying the most recent dataset of the two stored 
     ticks = time.time()  
     
+    #place into a dataframe and write a csv file with utf8 encoded tweets 
+    new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["text"])
+    new_tweets_df.to_csv(path_or_buf = os.path.join(MYDIR, 'data/tweets.csv'))
+    
     #testing aws
     s3client = boto3.client('s3')
     object_key = 'python_sample_key_2222.txt'
     bucket_name = 'disasters-on-twitter'
     s3client.put_object(Bucket=bucket_name, Key=object_key, Body=b'Hello World!')
+    s3client.upload_file('data/tweets.csv', Bucket=bucket_name, Key=object_key)
 
         
     return new_tweets
