@@ -8,6 +8,9 @@ import datetime
 import sys
 import logging
 import time
+import boto3
+import os
+
 from tweet_miner import fetch_tweets 
 from rq import Queue
 from worker import conn

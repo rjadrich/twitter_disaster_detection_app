@@ -17,10 +17,10 @@ def fetch_tweets():
 
     #get the tweets and store in a list
     new_tweets = []
-    for keyword in ["accident"]: #cleaned_keywords:
+    for keyword in keywords: #cleaned_keywords:
         results = api.search(q = keyword)
         for result in results:
-            new_tweets.append(result.text.encode('ascii', errors ="ignore"))
+            new_tweets.append(result.text.encode('utf-8', errors ="ignore"))
     
     #create a pandas dataframe of the new tweets
     new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["text"])  
