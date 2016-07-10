@@ -2,7 +2,6 @@ import time
 import pandas as pd
 import tweepy
 import boto3
-import os
 
 def fetch_tweets():
     #key information to access the twitter api
@@ -28,7 +27,7 @@ def fetch_tweets():
     
     #place into a dataframe and write a csv file with utf8 encoded tweets 
     new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["text"])
-    new_tweets_df.to_csv(path_or_buf = os.path.join(MYDIR, 'data/tweets.csv'))
+    new_tweets_df.to_csv(path_or_buf = 'data/tweets.csv')
     
     #testing aws
     s3client = boto3.client('s3')
