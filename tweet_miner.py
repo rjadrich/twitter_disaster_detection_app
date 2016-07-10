@@ -1,6 +1,7 @@
 import time
 import pandas as pd
 import tweepy
+import boto3
 
 def fetch_tweets():
     #key information to access the twitter api
@@ -23,5 +24,11 @@ def fetch_tweets():
         
     #create a time stamp to aid in identifying the most recent dataset of the two stored 
     ticks = time.time()  
+    
+    #testing aws
+    object_key = 'python_sample_key_2222.txt'
+    bucket_name = 'disasters-on-twitter'
+    s3client.put_object(Bucket=bucket_name, Key=object_key, Body=b'Hello World!')
+
         
     return new_tweets
