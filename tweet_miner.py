@@ -2,6 +2,7 @@ import time
 import pandas as pd
 import tweepy
 import boto3
+import os
 
 def fetch_tweets():
     #key information to access the twitter api
