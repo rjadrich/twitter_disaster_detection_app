@@ -26,6 +26,7 @@ def fetch_tweets():
     ticks = time.time()  
     
     #testing aws
+    s3client = boto3.client('s3')
     object_key = 'python_sample_key_2222.txt'
     bucket_name = 'disasters-on-twitter'
     s3client.put_object(Bucket=bucket_name, Key=object_key, Body=b'Hello World!')
