@@ -28,7 +28,7 @@ s3client = boto3.client('s3')
 q = Queue(connection = conn)
 
 #github link
-github = 'https://github.com/rjadrich/flask-demo'
+github = 'https://github.com/rjadrich/disaster_detection_via_twitter/blob/master/disaster_detection_via_twitter_data_incubator.ipynb'
 
 #make sure to display full data
 pd.set_option('display.max_colwidth', 300)
