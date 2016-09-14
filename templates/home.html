@@ -17,6 +17,7 @@
     <link rel=stylesheet type=text/css href='{{url_for('static',filename='css/bootstrap-theme.min.css')}}'>  
     <!-- Custom styles for this template -->
     <link rel=stylesheet type=text/css href='{{url_for('static',filename='css/jumbotron-narrow.css')}}'>  
+    <link rel=stylesheet type=text/css href='{{url_for('static',filename='css/tables.css')}}'>  
   </head>
 
   <body>
@@ -39,12 +40,16 @@
           <form id='input' method='post' action='home'> 
             <p>
             Threshold: <span id="range">50</span> %
-            <input type="range" name='classification_threshold' min="0" max="100" value="50" onchange="showValue(this.value)" />
+            <input type="range" name='Required certainty' min="0" max="100" value="50" onchange="showValue(this.value)" />
             </p>
-            <p><h4>For more information on what this parameter does see ...</h4></p>         
+            <p><h4>Only tweets with a certainty above this threshold are extracted</h4></p>         
             <button class="btn btn-lg btn-success" type="submit" value="Submit">Get Tweets</button>
           </form>
-       </div>
+      </div>
+       
+      <!--<p><a href='{{csv_link}}'>Download raw data</a></p>    -->
+      
+      <a href='{{csv_link}}'>{{csv_link_text}}</a>
           
       <!--this is where the tweets are displayed after submission-->
       <h1>{{table_title}}</h1>

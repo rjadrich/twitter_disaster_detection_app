@@ -31,6 +31,7 @@ def fetch_tweets():
     
     #classify the tweets using a gensim model persisted to file
     #...
+    new_tweets_df['Certainty'] = 0
     
     #the heroku filesystem is ephermeral so this file must be moved to amazon web services s3 hosting
     s3client = boto3.client('s3')
