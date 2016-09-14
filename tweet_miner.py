@@ -29,6 +29,9 @@ def fetch_tweets():
     new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["text"])
     new_tweets_df.to_csv(path_or_buf = 'data/tweets.csv')
     
+    #classify the tweets using a gensim model persisted to file
+    #...
+    
     #the heroku filesystem is ephermeral so this file must be moved to amazon web services s3 hosting
     s3client = boto3.client('s3')
     object_key = '%i.csv' % int(time.time())

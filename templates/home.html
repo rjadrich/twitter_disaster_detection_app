@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Disasters on Twitter</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel=stylesheet type=text/css href='{{url_for('static',filename='css/bootstrap.min.css')}}'>
+    <link rel=stylesheet type=text/css href='{{url_for('static',filename='css/bootstrap-theme.min.css')}}'>  
+    <!-- Custom styles for this template -->
+    <link rel=stylesheet type=text/css href='{{url_for('static',filename='css/jumbotron-narrow.css')}}'>  
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div class="header clearfix">
+        <nav>
+          <ul class="nav nav-pills pull-right">
+            <li role="presentation" class="active"><a href='{{url_for('home')}}'>Home</a></li>
+            <li role="presentation" class="inactive"><a href='{{url_for('home')}}'>About</a></li>
+            <li role="presentation" class="inactive"><a href='{{url_for('home')}}'>Algorithm</a></li>
+            <li role="presentation" class="inactive"><a href={{github}}>Github</a></li>
+          </ul>
+        </nav>
+        <h3 class="text-muted">Disasters on Twitter</h3>
+      </div>
+
+      <div class="jumbotron">
+          <h3>Extract mined disaster tweets<h3>
+          <form id='input' method='post' action='home'> 
+            <p>
+            Threshold: <span id="range">50</span> %
+            <input type="range" name='classification_threshold' min="0" max="100" value="50" onchange="showValue(this.value)" />
+            </p>
+            <p><h4>For more information on what this parameter does see ...</h4></p>         
+            <button class="btn btn-lg btn-success" type="submit" value="Submit">Get Tweets</button>
+          </form>
+       </div>
+          
+      <!--this is where the tweets are displayed after submission-->
+      <h1>{{table_title}}</h1>
+      {{ table|safe }}
+          
+
+      <footer class="footer">
+        <p>Created by Ryan Bradley Jadrich</p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <script type="text/javascript">
+    function showValue(newValue)
+    {
+        document.getElementById("range").innerHTML=newValue;
+    }
+    </script>
+
+  </body>
+</html>
