@@ -1,6 +1,8 @@
 #standard imports
 import re
 import htmlentitydefs
+import nltk
+nltk.data.path.append('./nltk_data/')
 from nltk.stem.porter import PorterStemmer
 import HTMLParser
 from copy import deepcopy

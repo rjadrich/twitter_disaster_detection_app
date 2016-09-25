@@ -1,6 +1,8 @@
 #this is a class for splitting tweet hastags and or usernames
 from numpy import log
 from copy import deepcopy
+import nltk
+nltk.data.path.append('./nltk_data/')
 from nltk.corpus import brown
 
 class Token_Splicer:

@@ -1,5 +1,7 @@
 import re
 from numpy import log
+import nltk
+nltk.data.path.append('./nltk_data/')
 from nltk.corpus import brown
 
 class Word_Reduction:
