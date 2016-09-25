@@ -29,7 +29,7 @@ def fetch_tweets():
     
     #classify the tweets using a gensim model persisted to file
     tokenize_it = twitter_parser.Tokenizer()
-    new_tweets_df['Tokenized'] = new_tweets_df['Tweet'].apply(tokenize_it)
+    new_tweets_df['Tokenized'] = new_tweets_df['Tweet'].apply(tokenize_it.tweet_to_tokens)
     new_tweets_df['Certainty'] = 0
     
     #write a csv file with utf8 encoded tweets 
