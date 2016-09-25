@@ -3,6 +3,7 @@ import pandas as pd
 import tweepy
 import boto3
 import os
+import twitter_parser
 
 def fetch_tweets():
 
@@ -20,18 +21,20 @@ def fetch_tweets():
     for keyword in keywords: #cleaned_keywords:
         results = api.search(q = keyword)
         for result in results:
-            new_tweets.append([keyword, result.text.encode('utf-8', errors ="ignore")])
+            new_tweets.append([keyword, result.text.encode('utf-8', errors ="ignore")]) 
     
-    #create a pandas dataframe of the new tweets
-    #new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["Keyword", "Tweet"])  
+    #write a csv file with utf8 encoded tweets 
+    #new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["Keyword", "Tweet"])
+    #new_tweets_df.to_csv(path_or_buf = 'data/tweets.csv')
+    
+    #classify the tweets using a gensim model persisted to file
+    tokenize_it = twitter_parser.Tokenizer()
+    new_tweets_df['Tokenized'] = new_tweets_df['Tweet'].apply(tokenize_it)
+    new_tweets_df['Certainty'] = 0
     
     #write a csv file with utf8 encoded tweets 
     new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["Keyword", "Tweet"])
     new_tweets_df.to_csv(path_or_buf = 'data/tweets.csv')
-    
-    #classify the tweets using a gensim model persisted to file
-    #...
-    new_tweets_df['Certainty'] = 0
     
     #the heroku filesystem is ephermeral so this file must be moved to amazon web services s3 hosting
     s3client = boto3.client('s3')
