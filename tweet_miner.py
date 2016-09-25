@@ -24,7 +24,7 @@ def fetch_tweets():
             new_tweets.append([keyword, result.text.encode('utf-8', errors ="ignore")]) 
     
     #write a csv file with utf8 encoded tweets 
-    #new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["Keyword", "Tweet"])
+    new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["Keyword", "Tweet"])
     #new_tweets_df.to_csv(path_or_buf = 'data/tweets.csv')
     
     #classify the tweets using a gensim model persisted to file
