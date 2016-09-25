@@ -33,7 +33,7 @@ def fetch_tweets():
     new_tweets_df['Certainty'] = 0
     
     #write a csv file with utf8 encoded tweets 
-    new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["Keyword", "Tweet"])
+    #new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["Keyword", "Tweet"])
     new_tweets_df.to_csv(path_or_buf = 'data/tweets.csv')
     
     #the heroku filesystem is ephermeral so this file must be moved to amazon web services s3 hosting
