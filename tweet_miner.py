@@ -21,7 +21,8 @@ def fetch_tweets():
     for keyword in keywords: #cleaned_keywords:
         results = api.search(q = keyword)
         for result in results:
-            new_tweets.append([keyword, result.text.encode('utf-8', errors ="ignore")]) 
+            #new_tweets.append([keyword, result.text.encode('utf-8', errors ="ignore")]) 
+            new_tweets.append([keyword, result.text])
     
     #write a csv file with utf8 encoded tweets 
     new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["Keyword", "Tweet"])
@@ -34,7 +35,7 @@ def fetch_tweets():
     
     #write a csv file with utf8 encoded tweets 
     #new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["Keyword", "Tweet"])
-    new_tweets_df.to_csv(path_or_buf = 'data/tweets.csv')
+    new_tweets_df.to_csv(path_or_buf = 'data/tweets.csv', encoding="utf-8")
     
     #the heroku filesystem is ephermeral so this file must be moved to amazon web services s3 hosting
     s3client = boto3.client('s3')
