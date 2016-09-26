@@ -6,7 +6,7 @@ import os
 import twitter_parser
 import dill
 from gensim import corpora, models
-from sklearn import linear_model
+from sklearn.linear_model import LogisticRegression
 
 def make_lsi(tokenized_text, dictionary, tfidf, lsi):
     lsi_vec = zip(*lsi[tfidf[dictionary.doc2bow(tokenized_text)]])
