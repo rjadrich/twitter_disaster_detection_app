@@ -4,6 +4,7 @@ import tweepy
 import boto3
 import os
 import twitter_parser
+from gensim import corpora, models
 
 def fetch_tweets():
 
