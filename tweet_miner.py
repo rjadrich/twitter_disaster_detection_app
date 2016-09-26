@@ -21,8 +21,7 @@ def fetch_tweets():
     for keyword in keywords: #cleaned_keywords:
         results = api.search(q = keyword)
         for result in results:
-            #new_tweets.append([keyword, result.text.encode('utf-8', errors ="ignore")]) 
-            new_tweets.append([keyword, result.text])
+            new_tweets.append([keyword, result.text.encode('utf-8', errors ="ignore")]) 
     
     #write a csv file with utf8 encoded tweets 
     new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["Keyword", "Tweet"])
@@ -31,11 +30,21 @@ def fetch_tweets():
     #classify the tweets using a gensim model persisted to file
     tokenize_it = twitter_parser.Tokenizer()
     new_tweets_df['Tokenized'] = new_tweets_df['Tweet'].apply(tokenize_it.tweet_to_tokens)
+    
+    
+    #load bow, tfidf, and lsi to transform for classification
+    dictionary = corpora.Dictionary.load('./models/model.dict')
+    tfidf = models.TfidfModel.load('./models/model.tfidf')
+    lsi = models.LsiModel.load('./models/model.lsi')
+    make_lsi = lambda tokenized_text: zip(*lsi[tfidf[dictionary.doc2bow(tokenized_text)]])[1]
+    new_tweets_df['LSI'] = new_tweets_df['Tokenized'].apply(make_lsi)
+    
+
     new_tweets_df['Certainty'] = 0
     
     #write a csv file with utf8 encoded tweets 
     #new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["Keyword", "Tweet"])
-    new_tweets_df.to_csv(path_or_buf = 'data/tweets.csv', encoding="utf-8")
+    new_tweets_df.to_csv(path_or_buf = 'data/tweets.csv')
     
     #the heroku filesystem is ephermeral so this file must be moved to amazon web services s3 hosting
     s3client = boto3.client('s3')
