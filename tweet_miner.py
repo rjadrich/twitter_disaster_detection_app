@@ -5,6 +5,17 @@ import boto3
 import os
 import twitter_parser
 from gensim import corpora, models
+from sklearn import linear_model
+
+def make_lsi(tokenized_text, dictionary, tfidf, lsi):
+    lsi_vec = zip(*lsi[tfidf[dictionary.doc2bow(tokenized_text)]])
+    if lsi_vec:
+        return lsi_vec[1]
+    else:
+        return [0.0 for i in range(lsi.num_topics)]
+    
+def predict(lsi_vec, model):
+    return model.predict_proba(lsi_vec)[0][1]
 
 def fetch_tweets():
 
@@ -33,16 +44,19 @@ def fetch_tweets():
     tokenize_it = twitter_parser.Tokenizer()
     new_tweets_df['Tokenized'] = new_tweets_df['Tweet'].apply(tokenize_it.tweet_to_tokens)
     
-    
     #load bow, tfidf, and lsi to transform for classification
     dictionary = corpora.Dictionary.load('./models/model.dict')
     tfidf = models.TfidfModel.load('./models/model.tfidf')
     lsi = models.LsiModel.load('./models/model.lsi')
-    make_lsi = lambda tokenized_text: zip(*lsi[tfidf[dictionary.doc2bow(tokenized_text)]])[1]
-    new_tweets_df['LSI'] = new_tweets_df['Tokenized'].apply(make_lsi)
+    make_lsi_wrapper = lambda tokenized_text: make_lsi(tokenized_text, dictionary, tfidf, lsi)
+    new_tweets_df['LSI'] = new_tweets_df['Tokenized'].apply(make_lsi_wrapper)
     
-
-    new_tweets_df['Certainty'] = 0
+    #predict the proba that it is a disaster
+    with open("./models/log_reg_model.dill") as model_file:
+        model = dill.load(model_file)  
+    predict_wrapper = lambda lsi_vec: predict(lsi_vec, model)
+    new_tweets_df['Certainty'] = new_tweets_df['LSI'].apply(predict_wrapper)
+    
     
     #write a csv file with utf8 encoded tweets 
     #new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["Keyword", "Tweet"])
