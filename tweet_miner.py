@@ -21,7 +21,8 @@ def fetch_tweets():
     for keyword in keywords: #cleaned_keywords:
         results = api.search(q = keyword)
         for result in results:
-            new_tweets.append([keyword, result.text.encode('utf-8', errors ="ignore")]) 
+            new_tweets.append([keyword, result.text]) 
+            #new_tweets.append([keyword, result.text.encode('utf-8', errors ="ignore")])
     
     #write a csv file with utf8 encoded tweets 
     new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["Keyword", "Tweet"])
