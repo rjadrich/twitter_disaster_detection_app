@@ -4,6 +4,7 @@ import tweepy
 import boto3
 import os
 import twitter_parser
+import dill
 from gensim import corpora, models
 from sklearn import linear_model
 
