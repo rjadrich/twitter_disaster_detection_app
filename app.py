@@ -69,7 +69,7 @@ def home():
         data_truncated_address = 'https://s3.amazonaws.com/disasters-on-twitter/%i_truncated.csv' % time_index
         data_stats_address = 'https://s3.amazonaws.com/disasters-on-twitter/%i_stats.csv' % time_index
         
-        return data_truncated_address
+        #return data_truncated_address
         
         #object_key = '%i_truncated.csv' % time_index
         #full_address = './data/' + object_key
@@ -85,11 +85,11 @@ def home():
 #                               csv_link = 'https://s3.amazonaws.com/disasters-on-twitter/1473879560.csv',
 #                               github=github)
 
-        df_tweets = pd.read_csv('https://s3.amazonaws.com/disasters-on-twitter/1475037364_truncated.csv', index_col = 0)
+        df_tweets = pd.read_csv(data_truncated_address, index_col = 0)
         return render_template('home.html', 
                                table=df_tweets.to_html(classes = 'tweets', index = False), 
                                csv_link_text = 'Download full raw data',
-                               csv_link = 'https://s3.amazonaws.com/disasters-on-twitter/1475037364.csv',
+                               csv_link = data_address,
                                github=github)
     
     
