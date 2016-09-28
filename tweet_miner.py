@@ -102,7 +102,7 @@ def fetch_tweets():
     #new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["Keyword", "Tweet"])
     new_tweets_df = new_tweets_df[['Keyword', 'Tweet', 'Certainty']].sort(['Certainty'], ascending = False).reset_index(drop=True)
     new_tweets_df.to_csv(path_or_buf = 'data/tweets.csv')
-    new_tweets_df[0:100].to_csv(path_or_buf = 'data/tweets_truncated.csv')
+    new_tweets_df[0:20].to_csv(path_or_buf = 'data/tweets_truncated.csv')
     
     #create a small dataset for plotting in bokeh on front end
     new_tweets_df['Certainty_Binned'] = new_tweets_df['Certainty'].apply(binDisasters)
