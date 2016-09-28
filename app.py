@@ -73,7 +73,7 @@ def home():
         data_stats_address = 'https://s3.amazonaws.com/disasters-on-twitter/%i_stats.csv' % time_index
         
         #load in the stats for plotting
-        df_stats = pd.read_csv('https://s3.amazonaws.com/disasters-on-twitter/1475037364_stats.csv', index_col = 0)
+        df_stats = pd.read_csv(data_stats_address, index_col = 0)
         
         certainty = df_stats['Certainty'].tolist()
         counts = df_stats['Counts'].tolist()
