@@ -29,7 +29,7 @@ s3client = boto3.client('s3')
 bucket_name = os.environ["S3_BUCKET_NAME"]
 
 #establish the queue
-q = Queue(connection = conn)
+#q = Queue(connection = conn)
 
 #github link
 github = 'https://github.com/rjadrich/disaster_detection_via_twitter/blob/master/disaster_detection_via_twitter_data_incubator.ipynb'
