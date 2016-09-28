@@ -118,12 +118,18 @@ def fetch_tweets():
     #the heroku filesystem is ephermeral so this file must be moved to amazon web services s3 hosting
     time_index = int(time.time())
     bucket_name = os.environ["S3_BUCKET_NAME"]
+    
     object_key = '%i.csv' % time_index
     s3client.upload_file('data/tweets.csv', Bucket=bucket_name, Key=object_key)
+    s3client.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=object_key)
+    
     object_key = '%i_truncated.csv' % time_index
     s3client.upload_file('data/tweets_truncated.csv', Bucket=bucket_name, Key=object_key)
+    s3client.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=object_key)
+    
     object_key = '%i_stats.csv' % time_index
     s3client.upload_file('data/tweets_stats.csv', Bucket=bucket_name, Key=object_key)
+    s3client.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=object_key)
     
     #now perform a little bucket cleaning (only keep 10 most recent)
     file_list = []

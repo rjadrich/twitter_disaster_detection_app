@@ -56,9 +56,22 @@ def home():
         file_list.sort()
         time_index = file_list[-1] #this will not ever generate an index out of range issue
         
+        #make sure everything is readable
+        object_key = '%i.csv' % time_index
+        s3client.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=object_key)
         object_key = '%i_truncated.csv' % time_index
-        full_address = './data/' + object_key
-        s3client.download_file(bucket_name, object_key, full_address)
+        s3client.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=object_key)
+        object_key = '%i_stats.csv' % time_index
+        s3client.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=object_key)
+        
+        #get addresses for the various data sets
+        data_address = 'https://s3.amazonaws.com/disasters-on-twitter/%i.csv' % time_index
+        data_truncated_address = 'https://s3.amazonaws.com/disasters-on-twitter/%i_truncated.csv' % time_index
+        data_stats_address = 'https://s3.amazonaws.com/disasters-on-twitter/%i_stats.csv' % time_index
+        
+        #object_key = '%i_truncated.csv' % time_index
+        #full_address = './data/' + object_key
+        #s3client.download_file(bucket_name, object_key, full_address)
         
 #        #send the data to the html table
 #        df_tweets = pd.read_csv(full_address, index_col = 0)
@@ -69,15 +82,22 @@ def home():
 #                               csv_link_text = 'Download full raw data',
 #                               csv_link = 'https://s3.amazonaws.com/disasters-on-twitter/1473879560.csv',
 #                               github=github)
-    
-    
-    
-        df_tweets = pd.read_csv('https://s3.amazonaws.com/disasters-on-twitter/1475037364.csv', index_col = 0)
+
+        df_tweets = pd.read_csv(data_truncated_address, index_col = 0)
         return render_template('home.html', 
                                table=df_tweets.to_html(classes = 'tweets', index = False), 
-                               csv_link_text = 'Download raw data',
-                               csv_link = 'https://s3.amazonaws.com/disasters-on-twitter/1475037364.csv',
+                               csv_link_text = 'Download full raw data',
+                               csv_link = data_address,
                                github=github)
+    
+    
+    
+#        df_tweets = pd.read_csv('https://s3.amazonaws.com/disasters-on-twitter/1475037364.csv', index_col = 0)
+#        return render_template('home.html', 
+#                               table=df_tweets.to_html(classes = 'tweets', index = False), 
+#                               csv_link_text = 'Download raw data',
+#                               csv_link = 'https://s3.amazonaws.com/disasters-on-twitter/1475037364.csv',
+#                               github=github)
     
         
         
