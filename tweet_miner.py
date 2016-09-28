@@ -104,10 +104,10 @@ def fetch_tweets():
     new_tweets_df[0:100].to_csv(path_or_buf = 'data/tweets_truncated.csv')
     
     #create a small dataset for plotting in bokeh on front end
-    df['Certainty_Binned'] = df['Certainty'].apply(binDisasters)
-    certainty_bins_keywords = [''] + getCertaintyKeywords(df) + ['']
-    certainty_bins =  [0.0] + df[['Certainty_Binned']].groupby(['Certainty_Binned']).apply(len).index.tolist() + [1.0]
-    counts_bins = [0.0] + df[['Certainty_Binned']].groupby(['Certainty_Binned']).apply(len).tolist() + [0.0]
+    new_tweets_df['Certainty_Binned'] = new_tweets_df['Certainty'].apply(binDisasters)
+    certainty_bins_keywords = [''] + getCertaintyKeywords(new_tweets_df) + ['']
+    certainty_bins =  [0.0] + new_tweets_df[['Certainty_Binned']].groupby(['Certainty_Binned']).apply(len).index.tolist() + [1.0]
+    counts_bins = [0.0] + new_tweets_df[['Certainty_Binned']].groupby(['Certainty_Binned']).apply(len).tolist() + [0.0]
     df_stats = pd.DataFrame(data = zip(certainty_bins, counts_bins, certainty_bins_keywords), columns = ['Certainty', 'Counts', 'Top_Keywords'])
     df_stats.to_csv(path_or_buf = 'data/tweets_stats.csv')
     
