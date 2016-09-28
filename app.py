@@ -56,7 +56,7 @@ def home():
         file_list.sort()
         time_index = file_list[-1] #this will not ever generate an index out of range issue
         
-        return time_index
+        return "hello %i" % time_index
         
         object_key = '%i_truncated.csv' % time_index
         full_address = './data/' + object_key
