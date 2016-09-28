@@ -24,6 +24,9 @@ app.vars={}
 #establish the s3 connection to get tweets
 s3client = boto3.client('s3')
 
+#get the bucket name
+bucket_name = os.environ["S3_BUCKET_NAME"]
+
 #establish the queue
 q = Queue(connection = conn)
 
@@ -43,15 +46,28 @@ def home():
     if request.method == 'GET':
         return render_template('home.html', github=github)
     else:
-        #df_tweets = pd.read_csv('https://s3.amazonaws.com/disasters-on-twitter/1468166721.csv')  
+        #fetch the most recent tweet data set and store locally
+        file_list = []
+        for entry in s3client.list_objects(Bucket=bucket_name)['Contents']:
+            search = re.search(r'([0-9]+).csv', entry['Key'])
+            if search:
+                file_list.append(int(search.group(1)))
+        file_list.sort()
+        time_index = file_list[-1] #this will not ever generate an index out of range issue
+        object_key = '%i_truncated.csv' % time_index
+        full_address = './data/' + object_key
+        s3client.download_file(bucket_name, object_key, full_address)
         
-        df_tweets = pd.read_csv('https://s3.amazonaws.com/disasters-on-twitter/1473879560.csv', index_col = 0)
+        #send the data to the html table
+        df_tweets = pd.read_csv(full_address, index_col = 0)
         return render_template('home.html', 
                                table=df_tweets.to_html(classes = 'tweets', index = False), 
-                               csv_link_text = 'Download raw data',
-                               csv_link = 'https://s3.amazonaws.com/disasters-on-twitter/1473879560.csv',
+                               csv_link_text = 'Download full raw data',
+                               csv_link = 'https://s3.amazonaws.com/disasters-on-twitter/%i.csv' % time_index,
                                github=github)
         
+        
+        #csv_link = 'https://s3.amazonaws.com/disasters-on-twitter/1473879560.csv',
 
 if __name__ == '__main__':
     app.debug = True
