@@ -8,6 +8,45 @@ import dill
 from gensim import corpora, models
 from sklearn.linear_model import LogisticRegression
 
+def binDisasters(certainty):
+    if certainty < 0.1:
+        return 0.05
+    elif certainty < 0.2:
+        return 0.15
+    elif certainty < 0.3:
+        return 0.25
+    elif certainty < 0.4:
+        return 0.35
+    elif certainty < 0.5:
+        return 0.45
+    elif certainty < 0.6:
+        return 0.55
+    elif certainty < 0.7:
+        return 0.65
+    elif certainty < 0.8:
+        return 0.75
+    elif certainty < 0.9:
+        return 0.85
+    else:
+        return 0.95
+    
+def getCertaintyKeywords(df):
+    df_grouped = df.groupby(['Certainty_Binned','Keyword']).apply(len)
+    df['Keyword'].unique().tolist()
+    certainty_keywords = []
+    for certainty in [0.05, 0.15, 0.25, 0.35, 0.45, 0.55, 0.65, 0.75, 0.85, 0.95]:
+        keywords = df_grouped[certainty].index.tolist()
+        counts = df_grouped[certainty].tolist()
+        counts_keywords = sorted(zip(counts, keywords))
+        num_keywords = len(counts_keywords)
+        n = 3
+        if num_keywords >= n:
+            certainty_keywords.append(', '.join(zip(*counts_keywords)[1][-n-1:]))
+        else:
+            certainty_keywords.append(','.join(zip(*counts_keywords)[1][-num_keywords-1:]))
+            
+    return certainty_keywords
+    
 def make_lsi(tokenized_text, dictionary, tfidf, lsi):
     lsi_vec = zip(*lsi[tfidf[dictionary.doc2bow(tokenized_text)]])
     if lsi_vec:
@@ -52,22 +91,36 @@ def fetch_tweets():
     make_lsi_wrapper = lambda tokenized_text: make_lsi(tokenized_text, dictionary, tfidf, lsi)
     new_tweets_df['LSI'] = new_tweets_df['Tokenized'].apply(make_lsi_wrapper)
     
-    #predict the proba that it is a disaster
+    #predict the probability that it is a disaster
     with open("./models/log_reg_model.dill") as model_file:
         model = dill.load(model_file)  
     predict_wrapper = lambda lsi_vec: predict(lsi_vec, model)
     new_tweets_df['Certainty'] = new_tweets_df['LSI'].apply(predict_wrapper)
     
-    
     #write a csv file with utf8 encoded tweets 
     #new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["Keyword", "Tweet"])
-    new_tweets_df[['Keyword', 'Tweet', 'Certainty']].sort(['Certainty'], ascending = False).to_csv(path_or_buf = 'data/tweets.csv')
+    new_tweets_df = new_tweets_df[['Keyword', 'Tweet', 'Certainty']].sort(['Certainty'], ascending = False).reset_index(drop=True)
+    new_tweets_df.to_csv(path_or_buf = 'data/tweets.csv')
+    new_tweets_df[0:100].to_csv(path_or_buf = 'data/tweets_truncated.csv')
+    
+    #create a small dataset for plotting in bokeh on front end
+    df['Certainty_Binned'] = df['Certainty'].apply(binDisasters)
+    certainty_bins_keywords = [''] + getCertaintyKeywords(df) + ['']
+    certainty_bins =  [0.0] + df[['Certainty_Binned']].groupby(['Certainty_Binned']).apply(len).index.tolist() + [1.0]
+    counts_bins = [0.0] + df[['Certainty_Binned']].groupby(['Certainty_Binned']).apply(len).tolist() + [0.0]
+    df_stats = pd.DataFrame(data = zip(certainty_bins, counts_bins, certainty_bins_keywords), columns = ['Certainty', 'Counts', 'Top_Keywords'])
+    df_stats.to_csv(path_or_buf = 'data/tweets_stats.csv')
     
     #the heroku filesystem is ephermeral so this file must be moved to amazon web services s3 hosting
     s3client = boto3.client('s3')
-    object_key = '%i.csv' % int(time.time())
+    time_index = int(time.time())
     bucket_name = os.environ["S3_BUCKET_NAME"]
+    object_key = '%i.csv' % time_index
     s3client.upload_file('data/tweets.csv', Bucket=bucket_name, Key=object_key)
+    object_key = '%i_truncated.csv' % time_index
+    s3client.upload_file('data/tweets_truncated.csv', Bucket=bucket_name, Key=object_key)
+    object_key = '%i_stats.csv' % time_index
+    s3client.upload_file('data/tweets_stats.csv', Bucket=bucket_name, Key=object_key)
         
     return new_tweets
 
