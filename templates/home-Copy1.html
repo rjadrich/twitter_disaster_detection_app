@@ -18,12 +18,6 @@
     <!-- Custom styles for this template -->
     <link rel=stylesheet type=text/css href='{{url_for('static',filename='css/jumbotron-narrow.css')}}'>  
     <link rel=stylesheet type=text/css href='{{url_for('static',filename='css/tables.css')}}'>  
-    <!-- Javascript for Bokeh plots-->
-    <!--<link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-0.9.2.min.css" type="text/css" />-->
-    <!--<script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-0.9.2.min.js"></script>-->
-    <link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.12.0.min.css" type="text/css" />   
-    <script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.12.0.min.js"></script>
-    {{ script | safe }}  
   </head>
 
   <body>
@@ -44,18 +38,14 @@
       <div class="jumbotron">
           <h3>Extract mined disaster tweets<h3>
           <form id='input' method='post' action='home'> 
-            <p><h4>Leveraging natural language processing and machine learning strategies, this app automatically monitors Twitter for disaster level events. Tweets recieve a probability score from 0 - 1, where 1 strongly suggests a disaster.</h4></p>         
+            <p>
+            Threshold: <span id="range">50</span> %
+            <input type="range" name='Required certainty' min="0" max="100" value="50" onchange="showValue(this.value)" />
+            </p>
+            <p><h4>Only tweets with a certainty above this threshold are extracted</h4></p>         
             <button class="btn btn-lg btn-success" type="submit" value="Submit">Get Tweets</button>
           </form>
       </div>
-          
-          
-          
-      <div class=page>
-        {{ div | safe }}
-      </div>    
-          
-          
        
       <!--<p><a href='{{csv_link}}'>Download raw data</a></p>    -->
       

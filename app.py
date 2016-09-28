@@ -96,7 +96,9 @@ def home():
                                table=df_tweets.to_html(classes = 'tweets', index = False), 
                                csv_link_text = 'Download full raw data',
                                csv_link = 'https://s3.amazonaws.com/disasters-on-twitter/1475037364.csv',
-                               github=github)
+                               github=github
+                               script = script,
+                               div = div)
         
         
         
