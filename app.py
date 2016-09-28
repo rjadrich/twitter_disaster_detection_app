@@ -10,6 +10,7 @@ import logging
 import time
 import boto3
 import os
+import re
 
 from tweet_miner import fetch_tweets 
 from rq import Queue
