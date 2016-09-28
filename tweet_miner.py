@@ -7,6 +7,7 @@ import twitter_parser
 import dill
 from gensim import corpora, models
 from sklearn.linear_model import LogisticRegression
+import re
 
 def binDisasters(certainty):
     if certainty < 0.1:
@@ -111,8 +112,10 @@ def fetch_tweets():
     df_stats = pd.DataFrame(data = zip(certainty_bins, counts_bins, certainty_bins_keywords), columns = ['Certainty', 'Counts', 'Top_Keywords'])
     df_stats.to_csv(path_or_buf = 'data/tweets_stats.csv')
     
-    #the heroku filesystem is ephermeral so this file must be moved to amazon web services s3 hosting
+    #establish s3 client
     s3client = boto3.client('s3')
+    
+    #the heroku filesystem is ephermeral so this file must be moved to amazon web services s3 hosting
     time_index = int(time.time())
     bucket_name = os.environ["S3_BUCKET_NAME"]
     object_key = '%i.csv' % time_index
@@ -121,7 +124,24 @@ def fetch_tweets():
     s3client.upload_file('data/tweets_truncated.csv', Bucket=bucket_name, Key=object_key)
     object_key = '%i_stats.csv' % time_index
     s3client.upload_file('data/tweets_stats.csv', Bucket=bucket_name, Key=object_key)
-        
+    
+    #now perform a little bucket cleaning (only keep 10 most recent)
+    file_list = []
+    for entry in s3client.list_objects(Bucket=bucket_name)['Contents']:
+        search = re.search(r'([0-9]+).csv', entry['Key'])
+        if search:
+            file_list.append(int(search.group(1)))
+    file_list.sort()
+    file_list_delete = file_list[:-10] #this will not ever generate an index out of range issue
+    
+    for time_index in file_list_delete:
+        object_key = '%i.csv' % time_index
+        s3client.delete_object(Bucket=bucket_name, Key=object_key)
+        object_key = '%i_truncated.csv' % time_index
+        s3client.delete_object(Bucket=bucket_name, Key=object_key)
+        object_key = '%i_stats.csv' % time_index
+        s3client.delete_object(Bucket=bucket_name, Key=object_key)
+            
     return new_tweets
 
 if __name__ == "__main__":
