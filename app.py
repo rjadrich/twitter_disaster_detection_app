@@ -11,6 +11,9 @@ import time
 import boto3
 import os
 import re
+from bokeh.charts import Bar, show, save
+from bokeh.models import HoverTool
+from bokeh.io import output_file
 
 from tweet_miner import fetch_tweets 
 #from rq import Queue
@@ -70,10 +73,22 @@ def home():
         data_stats_address = 'https://s3.amazonaws.com/disasters-on-twitter/%i_stats.csv' % time_index
         
         #load in the stats for plotting
-        #df_stats = pd.read_csv('https://s3.amazonaws.com/disasters-on-twitter/475037364_stats.csv', index_col = 0)
+        df_stats = pd.read_csv('https://s3.amazonaws.com/disasters-on-twitter/1475037364_stats.csv', index_col = 0)
         
+        certainty = df_stats['Certainty'].tolist()
+        counts = df_stats['Counts'].tolist()
+        top_keywords = df_stats['Top_Keywords'].tolist()
+        data = {'Certainty': certainty, 'Counts': counts, 'Top_Keywords': top_keywords}
+
+        plot = Bar(data, label='Certainty', values='Counts', stack = 'Top_Keywords', tools='hover', legend = False, 
+                   color = '#3288bd', width = 500, height = 500, title = 'Mined Disaster Tweet Statistics')
+        plot.xaxis.axis_label = 'Certainty of Disaster'
+        plot.yaxis.axis_label = 'Number of Tweets'
+
+        hover = plot.select(dict(type=HoverTool))
+        hover.tooltips = [('Top keywords', '@Top_Keywords')]
         
-        
+        script, div = components(plot)
         
         
         #return data_truncated_address
