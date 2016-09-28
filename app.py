@@ -13,8 +13,8 @@ import os
 import re
 
 from tweet_miner import fetch_tweets 
-from rq import Queue
-from worker import conn
+#from rq import Queue
+#from worker import conn
 
 #establish the app and logging for app
 app = Flask(__name__)
@@ -55,6 +55,9 @@ def home():
                 file_list.append(int(search.group(1)))
         file_list.sort()
         time_index = file_list[-1] #this will not ever generate an index out of range issue
+        
+        return time_index
+        
         object_key = '%i_truncated.csv' % time_index
         full_address = './data/' + object_key
         s3client.download_file(bucket_name, object_key, full_address)
