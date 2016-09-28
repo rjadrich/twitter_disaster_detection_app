@@ -48,7 +48,7 @@ def main():
 @app.route('/home', methods=['GET','POST'])
 def home():
     if request.method == 'GET':
-        return render_template('home.html', github=github)
+        return render_template('home.html', github=github, time_string = 'Monitoring Twitter for disasters 24/7')
     else:
         #fetch the most recent tweet data set and store locally
         file_list = []
@@ -60,8 +60,8 @@ def home():
                 date_list.append(entry['LastModified'].strftime('%m/%d/%Y %H:%M %Z'))
         file_date_list = zip(file_list, date_list)
         file_date_list.sort()        
-        time_index = file_list[-1][0]
-        time_string = 'Extracted data mined on ' + file_list[-1][1]
+        time_index = file_date_list[-1][0]
+        time_string = 'Extracted data mined on ' + file_date_list[-1][1]
         
         #file_list.sort()
         #time_index = file_list[-1] #this will not ever generate an index out of range issue
