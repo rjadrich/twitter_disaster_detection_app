@@ -69,6 +69,8 @@ def home():
         data_truncated_address = 'https://s3.amazonaws.com/disasters-on-twitter/%i_truncated.csv' % time_index
         data_stats_address = 'https://s3.amazonaws.com/disasters-on-twitter/%i_stats.csv' % time_index
         
+        return data_truncated_address
+        
         #object_key = '%i_truncated.csv' % time_index
         #full_address = './data/' + object_key
         #s3client.download_file(bucket_name, object_key, full_address)
