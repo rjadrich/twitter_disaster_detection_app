@@ -60,16 +60,25 @@ def home():
         full_address = './data/' + object_key
         s3client.download_file(bucket_name, object_key, full_address)
         
-        #send the data to the html table
-        df_tweets = pd.read_csv(full_address, index_col = 0)
-        
-        #return "hello after csv read download %i" % len(df_tweets)
-        
+#        #send the data to the html table
+#        df_tweets = pd.read_csv(full_address, index_col = 0)
+#        
+#        #return "hello after csv read download %i" % len(df_tweets)
+#        return render_template('home.html', 
+#                               table=df_tweets.to_html(classes = 'tweets', index = False), 
+#                               csv_link_text = 'Download full raw data',
+#                               csv_link = 'https://s3.amazonaws.com/disasters-on-twitter/1473879560.csv',
+#                               github=github)
+    
+    
+    
+        df_tweets = pd.read_csv('https://s3.amazonaws.com/disasters-on-twitter/1475037364.csv', index_col = 0)
         return render_template('home.html', 
                                table=df_tweets.to_html(classes = 'tweets', index = False), 
-                               csv_link_text = 'Download full raw data',
-                               csv_link = 'https://s3.amazonaws.com/disasters-on-twitter/1473879560.csv',
+                               csv_link_text = 'Download raw data',
+                               csv_link = 'https://s3.amazonaws.com/disasters-on-twitter/1475037364.csv',
                                github=github)
+    
         
         
         #csv_link = 'https://s3.amazonaws.com/disasters-on-twitter/1473879560.csv',
