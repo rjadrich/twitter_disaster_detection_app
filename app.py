@@ -60,10 +60,11 @@ def home():
         full_address = './data/' + object_key
         s3client.download_file(bucket_name, object_key, full_address)
         
-        return "hello after file download %i" % time_index
-        
         #send the data to the html table
         df_tweets = pd.read_csv(full_address, index_col = 0)
+        
+        return "hello after csv read download %i" % time_index
+        
         return render_template('home.html', 
                                table=df_tweets.to_html(classes = 'tweets', index = False), 
                                csv_link_text = 'Download full raw data',
