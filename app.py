@@ -63,16 +63,18 @@ def home():
         #send the data to the html table
         df_tweets = pd.read_csv(full_address, index_col = 0)
         
-        return "hello after csv read download %i" % len(df_tweets)
+        #return "hello after csv read download %i" % len(df_tweets)
         
         return render_template('home.html', 
                                table=df_tweets.to_html(classes = 'tweets', index = False), 
                                csv_link_text = 'Download full raw data',
-                               csv_link = ('https://s3.amazonaws.com/disasters-on-twitter/%i.csv' % time_index),
+                               csv_link = 'https://s3.amazonaws.com/disasters-on-twitter/1473879560.csv',
                                github=github)
         
         
         #csv_link = 'https://s3.amazonaws.com/disasters-on-twitter/1473879560.csv',
+        
+        #csv_link = ('https://s3.amazonaws.com/disasters-on-twitter/%i.csv' % time_index),
 
 if __name__ == '__main__':
     app.debug = True
