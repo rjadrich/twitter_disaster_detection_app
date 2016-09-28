@@ -83,7 +83,7 @@ def home():
 #                               csv_link = 'https://s3.amazonaws.com/disasters-on-twitter/1473879560.csv',
 #                               github=github)
 
-        df_tweets = pd.read_csv('https://s3.amazonaws.com/disasters-on-twitter/1475037364.csv', index_col = 0)
+        df_tweets = pd.read_csv('https://s3.amazonaws.com/disasters-on-twitter/1475037364_truncated.csv', index_col = 0)
         return render_template('home.html', 
                                table=df_tweets.to_html(classes = 'tweets', index = False), 
                                csv_link_text = 'Download full raw data',
