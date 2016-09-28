@@ -56,11 +56,11 @@ def home():
         file_list.sort()
         time_index = file_list[-1] #this will not ever generate an index out of range issue
         
-        return "hello %i" % time_index
-        
         object_key = '%i_truncated.csv' % time_index
         full_address = './data/' + object_key
         s3client.download_file(bucket_name, object_key, full_address)
+        
+        return "hello after file download %i" % time_index
         
         #send the data to the html table
         df_tweets = pd.read_csv(full_address, index_col = 0)
