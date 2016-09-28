@@ -43,7 +43,7 @@ pd.set_option('display.max_colwidth', 300)
 @app.route('/')
 def main():
     #df_tweets = pd.read_csv('https://s3.amazonaws.com/disasters-on-twitter/1468166721.csv')  
-    return render_template('home.html', github=github)
+    return render_template('home.html', github=github, time_string = 'Monitoring Twitter for disasters 24/7')
 
 @app.route('/home', methods=['GET','POST'])
 def home():
@@ -52,12 +52,19 @@ def home():
     else:
         #fetch the most recent tweet data set and store locally
         file_list = []
+        date_list = []
         for entry in s3client.list_objects(Bucket=bucket_name)['Contents']:
             search = re.search(r'([0-9]+).csv', entry['Key'])
             if search:
                 file_list.append(int(search.group(1)))
-        file_list.sort()
-        time_index = file_list[-1] #this will not ever generate an index out of range issue
+                date_list.append(entry['LastModified'].strftime('%m/%d/%Y %H:%M %Z'))
+        file_date_list = zip(file_list, date_list)
+        file_date_list.sort()        
+        time_index = file_list[-1][0]
+        time_string = 'Extracted data mined on ' + file_list[-1][1]
+        
+        #file_list.sort()
+        #time_index = file_list[-1] #this will not ever generate an index out of range issue
         
         #make sure everything is readable
         object_key = '%i.csv' % time_index
@@ -90,6 +97,12 @@ def home():
         
         script, div = components(plot)
         
+        #send the data out
+        plot_summary = 'Summary of mined tweets organized by certainty'
+        plot_info = 'Mouseover shows dominant disaster keywords in each bin'
+        table_summary = 'Sample of tweets mined and sorted by certainty'
+        table_info = 'The whole dataset in csv format can be downloaded via the link'
+        
         #df_tweets = pd.DataFrame(data = [[10, 45], [23, 45]])
         df_tweets = pd.read_csv(data_truncated_address, index_col = 0)
         return render_template('home.html', 
@@ -98,7 +111,12 @@ def home():
                                csv_link = data_address,
                                github=github,
                                script = script,
-                               div = div)
+                               div = div,
+                               time_string = time_string,
+                               plot_summary = plot_summary,
+                               plot_info = plot_info,
+                               table_summary = table_summary,
+                               table_info = table_info)
         
         
         

@@ -44,20 +44,26 @@
       <div class="jumbotron">
           <h3>Extract mined disaster tweets<h3>
           <form id='input' method='post' action='home'> 
-            <p><h4>Monitoring Twitter for disaster events 24 hr 7 days a week</h4></p>         
+            <p><h4>{{time_string}}</h4></p>         
             <button class="btn btn-lg btn-success" type="submit" value="Submit">Get Tweets</button>
           </form>
       </div>
           
-      <p><h3>Summary of mined tweets organized by certainty</h3></p>
-      <p><h4>Mouseover shows dominant disaster keywords in each bin</h4></p>
+    
+          
+      <!--<p><h3>Summary of mined tweets organized by certainty</h3></p>-->
+      <!--<p><h4>Mouseover shows dominant disaster keywords in each bin</h4></p>-->
+      <div align="center"><p><h3>{{plot_summary}}</h3></p></div>
+      <div align="center"><p><h4>{{plot_info}}</h4></p></div>
           
       <div class=page align="center">
         {{ div | safe }}
       </div>    
           
-      <p><h3>Sample of tweets mined and sorted by certainty</h3></p>
-      <p><h4>The whole dataset in csv format can be downloaded via the link</h4></p>    
+      <!--<p><h3>Sample of tweets mined and sorted by certainty</h3></p>-->
+      <!--<p><h4>The whole dataset in csv format can be downloaded via the link</h4></p>-->
+      <div align="center"><p><h3>{{table_summary}}</h3></p></div>
+      <div align="center"><p><h4>{{table_info}}</h4></p></div>
        
       <!--<p><a href='{{csv_link}}'>Download raw data</a></p>    -->
       
