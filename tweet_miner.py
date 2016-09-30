@@ -103,7 +103,13 @@ def fetch_tweets():
     with open("./models/log_reg_model.dill") as model_file:
         model = dill.load(model_file)  
     predict_wrapper = lambda lsi_vec: predict(lsi_vec, model)
-    new_tweets_df['Certainty'] = new_tweets_df['LSI'].apply(predict_wrapper)
+    new_tweets_df['Certainty'] = new_tweets_df['LSI'].apply(predict_wrapper) 
+    
+    #CLEANUP!
+    dictionary = None
+    tfidf = None
+    lsi = None
+    model = None
     
     #write a csv file with utf8 encoded tweets 
     #new_tweets_df = pd.DataFrame(data = new_tweets, columns = ["Keyword", "Tweet"])
@@ -118,9 +124,13 @@ def fetch_tweets():
     counts_bins = [0.0] + new_tweets_df[['Certainty_Binned']].groupby(['Certainty_Binned']).apply(len).tolist() + [0.0]
     df_stats = pd.DataFrame(data = zip(certainty_bins, counts_bins, certainty_bins_keywords), columns = ['Certainty', 'Counts', 'Top_Keywords'])
     df_stats.to_csv(path_or_buf = 'data/tweets_stats.csv')
+    #CLEANUP!
+    df_stats = None
     
     #create a small dataset of keyword stats
     df_keyword_stats = new_tweets_df.groupby('Keyword').agg({'Certainty':[len, np.median, per_10, per_90, 'min', 'max']})['Certainty']
+    #CLEANUP!
+    new_tweets_df = None
     df_keyword_stats = df_keyword_stats[df_keyword_stats['len'] >= 10].sort(['median'], ascending = False)
     df_keyword_stats = df_keyword_stats[0:50]
     df_keyword_stats.to_csv(path_or_buf = 'data/tweets_keyword_stats.csv')
