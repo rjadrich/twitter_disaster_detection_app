@@ -8,6 +8,13 @@ import dill
 from gensim import corpora, models
 from sklearn.linear_model import LogisticRegression
 import re
+import numpy as np
+
+#offset the percentiles by a small amount to make sure it plots something 
+def per_10(x):
+    return np.percentile(x, 9.99)
+def per_90(x):
+    return np.percentile(x, 90.01)
 
 def binDisasters(certainty):
     if certainty < 0.1:
@@ -112,6 +119,14 @@ def fetch_tweets():
     df_stats = pd.DataFrame(data = zip(certainty_bins, counts_bins, certainty_bins_keywords), columns = ['Certainty', 'Counts', 'Top_Keywords'])
     df_stats.to_csv(path_or_buf = 'data/tweets_stats.csv')
     
+    #create a small dataset of keyword stats
+    df_keyword_stats = new_tweets_df.groupby('Keyword').agg({'Certainty':[len, np.median, per_10, per_90, 'min', 'max']})['Certainty']
+    df_keyword_stats = df_keyword_stats[df_keyword_stats['len'] >= 10].sort(['median'], ascending = False)
+    df_keyword_stats = df_keyword_stats[0:50]
+    df_keyword_stats.to_csv(path_or_buf = 'data/tweets_keyword_stats.csv')
+    
+    ###################################################################################################################################
+    
     #establish s3 client
     s3client = boto3.client('s3')
     
@@ -131,6 +146,10 @@ def fetch_tweets():
     s3client.upload_file('data/tweets_stats.csv', Bucket=bucket_name, Key=object_key)
     s3client.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=object_key)
     
+    object_key = '%i_keyword_stats.csv' % time_index
+    s3client.upload_file('data/tweets_keyword_stats.csv', Bucket=bucket_name, Key=object_key)
+    s3client.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=object_key)
+    
     #now perform a little bucket cleaning (only keep 10 most recent)
     file_list = []
     for entry in s3client.list_objects(Bucket=bucket_name)['Contents']:
@@ -146,6 +165,8 @@ def fetch_tweets():
         object_key = '%i_truncated.csv' % time_index
         s3client.delete_object(Bucket=bucket_name, Key=object_key)
         object_key = '%i_stats.csv' % time_index
+        s3client.delete_object(Bucket=bucket_name, Key=object_key)
+        object_key = '%i_keyword_stats.csv' % time_index
         s3client.delete_object(Bucket=bucket_name, Key=object_key)
             
     return new_tweets

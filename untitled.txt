@@ -1,0 +1,21 @@
+keywords = [ , , , , , ,  , ,  , , , , , , , , , , , , , , 'casualties', 'casualty', 'catastrophe', 'catastrophic', 'chemical emergency', 'cliff fall', 'collapse', 'collapsed', , 'crush', 'crushed', 'curfew', 'cyclone', , 'debris', 'deluge', 'deluged', 'demolish', 'demolished', 'demolition', 'derail', 'derailed', 'derailment', 'desolate', 'desolation', 'destroy', 'destroyed', 'destruction', 'detonate', 'detonation', 'devastated', 'devastation', 'disaster', 'displaced', 'drought', 'drown', 'drowned', 'drowning', 'dust storm', 'earthquake', 'electrocute', 'electrocuted', 'emergency', 'emergency plan', 'emergency services', 'engulfed', 'epicentre', 'evacuate', 'evacuated', 'evacuation', 'explode', 'exploded', 'explosion', 'eyewitness', 'famine', 'fatal', 'fatalities', 'fatality', 'fear', 'fire', 'fire truck', 'first responders', 'flames', 'flattened', , 'forest fire', 'forest fires', 'hail', 'hailstorm', 'harm', 'hazard', 'hazardous', 'heat wave', 'hellfire', , 'hurricane', 'injured', 'injuries', 'injury', 'inundated', 'inundation', , 'loud bang', 'mass murder', 'mass murderer', 'massacre', 'mayhem', 'meltdown', 'military', 'mudslide', 'natural disaster', 'nuclear disaster', 'nuclear reactor', 'obliterate', 'obliterated', 'obliteration', 'oil spill', 'outbreak', 'pandemonium', 'panic', 'panicking', 'police', 'quarantine', 'quarantined', 'radiation emergency', 'rainstorm', 'razed', 'refugees', 'rescue', 'rescued', 'rescuers', 'riot', 'rioting', 'rubble', 'ruin', 'sandstorm', 'screamed', 'screaming', 'screams', 'seismic', 'sinkhole', 'sinking', 'siren', 'sirens', 'smoke', 'snowstorm', 'storm', 'stretcher', 'structural failure', 'suicide bomb', 'suicide bomber', 'suicide bombing', 'sunk', 'survive', 'survived', 'survivors', 'terrorism', 'terrorist', 'threat', 'thunder', 'thunderstorm', 'tornado', 'tragedy', 'trapped', 'trauma', 'traumatised', 'trouble', , , 'weapon', 'weapons', , 'wounded', 'wounds', 'wreck', 'wreckage', 'wrecked']
+
+fire = ['ablaze', 'arson', 'arsonist', 'blaze', 'blazing', 'buildings burning', 'buildings on fire', 'burned', 'burning', 'burning buildings', 'bush fires', 'wild fires', 'wildfire', ]
+
+vehicular_accident = ['airplane accident', 'collide', 'collided', 'collision', 'crash', 'crashed']
+
+natural_disasters = ['aftershock', 'avalanche', 'blight', 'blizzard', 'whirlwind', 'windstorm', 'tsunami', 'twister', 'typhoon', 'upheaval', 'violent storm', 'volcano', 'landslide', 'lava', 'lightning', 'flood', 'flooding', 'floods', ]
+
+military = ['army', 'battle', 'war zone']
+
+structural = ['bridge collapse']
+
+terrorism = ['bioterror', 'bioterrorism', 'bomb', 'bombed', 'bombing', 'attack', 'attacked', 'blew up', 'blown up', 'hijack', 'hijacker', 'hijacking', 'hostage', 'hostages', ]
+
+explosions = []
+
+apocalyptic = ['annihilated', 'annihilation', 'apocalypse', 'armageddon']
+
+other = ['accident', 'ambulance', 'bleeding', 'blood', 'bloody']
+
+other = ['body bag', 'body bagging', 'body bags', 'damage', 'danger', 'dead', 'death', 'deaths']
