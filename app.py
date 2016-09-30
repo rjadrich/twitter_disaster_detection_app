@@ -79,7 +79,7 @@ def home():
         data_truncated_address = 'https://s3.amazonaws.com/disasters-on-twitter/%i_truncated.csv' % time_index
         data_stats_address = 'https://s3.amazonaws.com/disasters-on-twitter/%i_stats.csv' % time_index
         
-        #load in the stats for plotting
+        #generate the stats data plot
         df_stats = pd.read_csv(data_stats_address, index_col = 0)
         
         certainty = df_stats['Certainty'].tolist()
@@ -95,11 +95,11 @@ def home():
         hover = plot.select(dict(type=HoverTool))
         hover.tooltips = [('Top keywords', '@Top_Keywords')]
         
-        script, div = components(plot)
+        stats_script, stats_div = components(plot)
         
         #send the data out
-        plot_summary = 'Summary of mined tweets organized by certainty'
-        plot_info = 'Mouseover shows dominant disaster keywords in each bin'
+        stats_plot_summary = 'Summary of mined tweets organized by certainty'
+        stats_plot_info = 'Mouseover shows dominant disaster keywords in each bin'
         table_summary = 'Sample of tweets mined and sorted by certainty'
         table_info = 'The whole dataset in csv format can be downloaded via the link'
         
@@ -110,11 +110,11 @@ def home():
                                csv_link_text = 'Download full raw data',
                                csv_link = data_address,
                                github=github,
-                               script = script,
-                               div = div,
                                time_string = time_string,
-                               plot_summary = plot_summary,
-                               plot_info = plot_info,
+                               stats_script = stats_script,
+                               stats_div = stats_div,
+                               stats_plot_summary = stats_plot_summary,
+                               stats_plot_info = stats_plot_info,
                                table_summary = table_summary,
                                table_info = table_info)
         
