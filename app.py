@@ -90,8 +90,8 @@ def home():
         counts = df_stats['Counts'].tolist()
         top_keywords = df_stats['Top_Keywords'].tolist()
         data = {'Certainty': certainty, 'Counts': counts, 'Top_Keywords': top_keywords}
-        plot = Bar(data, label='Certainty', values='Counts', stack = 'Top_Keywords', tools='hover', legend = False, 
-                   color = '#3288bd', width = 500, height = 500, title = 'Mined Disaster Tweet Statistics')
+        plot = Bar(data, label='Certainty', values='Counts', stack = 'Top_Keywords', tools='hover', toolbar_location="above", 
+                   legend = False, color = '#3288bd', width = 600, height = 600, title = 'Mined Disaster Tweet Statistics')
         plot.xaxis.axis_label = 'Certainty of Disaster'
         plot.yaxis.axis_label = 'Number of Tweets'
         hover = plot.select(dict(type=HoverTool))
@@ -115,8 +115,8 @@ def home():
                     q21d=q2-q1,
                 )
             )
-        plot = figure(tools="save,pan,wheel_zoom,box_zoom,reset,hover", 
-                   title="Top 50 keywords by median certainty", 
+        plot = figure(tools="save,pan,wheel_zoom,box_zoom,reset,hover", toolbar_location="above",
+                   width = 600, height = 600, title="Top 50 keywords by median certainty", 
                    x_range=['','']+keywords+['',''])
         plot.rect('keywords', 'q32m', 0.7, 'q32d',
             fill_color="#d53e4f", line_width=1, line_color="black", source=source)
