@@ -14,6 +14,8 @@ import re
 from bokeh.charts import Bar, show, save
 from bokeh.models import HoverTool
 from bokeh.io import output_file
+from bokeh.plotting import figure, ColumnDataSource
+import numpy as np
 
 from tweet_miner import fetch_tweets 
 #from rq import Queue
@@ -67,43 +69,75 @@ def home():
         #time_index = file_list[-1] #this will not ever generate an index out of range issue
         
         #make sure everything is readable
-        object_key = '%i.csv' % time_index
-        s3client.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=object_key)
-        object_key = '%i_truncated.csv' % time_index
-        s3client.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=object_key)
-        object_key = '%i_stats.csv' % time_index
-        s3client.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=object_key)
+        #object_key = '%i.csv' % time_index
+        #s3client.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=object_key)
+        #object_key = '%i_truncated.csv' % time_index
+        #s3client.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=object_key)
+        #object_key = '%i_stats.csv' % time_index
+        #s3client.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=object_key)
+        #object_key = '%i_keyword_stats.csv' % time_index
+        #s3client.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=object_key)
         
         #get addresses for the various data sets
         data_address = 'https://s3.amazonaws.com/disasters-on-twitter/%i.csv' % time_index
         data_truncated_address = 'https://s3.amazonaws.com/disasters-on-twitter/%i_truncated.csv' % time_index
         data_stats_address = 'https://s3.amazonaws.com/disasters-on-twitter/%i_stats.csv' % time_index
+        data_keyword_stats_address = 'https://s3.amazonaws.com/disasters-on-twitter/%i_keyword_stats.csv' % time_index
         
         #generate the stats data plot
         df_stats = pd.read_csv(data_stats_address, index_col = 0)
-        
         certainty = df_stats['Certainty'].tolist()
         counts = df_stats['Counts'].tolist()
         top_keywords = df_stats['Top_Keywords'].tolist()
         data = {'Certainty': certainty, 'Counts': counts, 'Top_Keywords': top_keywords}
-
         plot = Bar(data, label='Certainty', values='Counts', stack = 'Top_Keywords', tools='hover', legend = False, 
                    color = '#3288bd', width = 500, height = 500, title = 'Mined Disaster Tweet Statistics')
         plot.xaxis.axis_label = 'Certainty of Disaster'
         plot.yaxis.axis_label = 'Number of Tweets'
-
         hover = plot.select(dict(type=HoverTool))
         hover.tooltips = [('Top keywords', '@Top_Keywords')]
-        
         stats_script, stats_div = components(plot)
+        df_stats = None
+        
+        #generate the keyword stats data plot
+        df_keyword_stats = pd.read_csv(data_keyword_stats_address, index_col = 0)
+        keywords = df_keyword_stats.index.tolist()
+        q1 = np.array(df_keyword_stats['per_10'])
+        q2 = np.array(df_keyword_stats['median'])
+        q3 = np.array(df_keyword_stats['per_90'])
+        df_keyword_stats = None
+        source = ColumnDataSource(
+                data=dict(
+                    keywords = keywords,
+                    q32m=(q3+q2)/2,
+                    q32d=q3-q2,
+                    q21m=(q2+q1)/2,
+                    q21d=q2-q1,
+                )
+            )
+        plot = figure(tools="save,pan,wheel_zoom,box_zoom,reset,hover", 
+                   title="Top 50 keywords by median certainty", 
+                   x_range=['','']+keywords+['',''])
+        plot.rect('keywords', 'q32m', 0.7, 'q32d',
+            fill_color="#d53e4f", line_width=1, line_color="black", source=source)
+        plot.rect('keywords', 'q21m', 0.7, 'q21d',
+            fill_color="#3288bd", line_width=1, line_color="black", source=source)
+        plot.xaxis.major_label_orientation = 3.14/3
+        plot.xaxis.axis_label = 'Keyword'
+        plot.yaxis.axis_label = 'Certainty (10th, 50th and 70th percentiles)'
+        hover = plot.select(dict(type=HoverTool))
+        hover.tooltips = [('Keyword', '@keywords')]
+        keyword_stats_script, keyword_stats_div = components(plot)           
         
         #send the data out
         stats_plot_summary = 'Summary of mined tweets organized by certainty'
         stats_plot_info = 'Mouseover shows dominant disaster keywords in each bin'
+        keyword_stats_plot_summary = 'Statistical summary of top 50 keywords by median certainty'
+        keyword_stats_plot_info = 'Keywords with less than 10 tweets have been neglected. Mouseover shows keyword'
         table_summary = 'Sample of tweets mined and sorted by certainty'
         table_info = 'The whole dataset in csv format can be downloaded via the link'
         
-        #df_tweets = pd.DataFrame(data = [[10, 45], [23, 45]])
+
         df_tweets = pd.read_csv(data_truncated_address, index_col = 0)
         return render_template('home.html', 
                                table=df_tweets.to_html(classes = 'tweets', index = False), 
@@ -115,6 +149,10 @@ def home():
                                stats_div = stats_div,
                                stats_plot_summary = stats_plot_summary,
                                stats_plot_info = stats_plot_info,
+                               keyword_stats_script = keyword_stats_script,
+                               keyword_stats_div = keyword_stats_div,
+                               keyword_stats_plot_summary = keyword_stats_plot_summary,
+                               keyword_stats_plot_info = keyword_stats_plot_info,
                                table_summary = table_summary,
                                table_info = table_info)
         
