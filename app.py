@@ -158,7 +158,7 @@ def about():
     topics = lsi.print_topics(n_topics, num_words = n_words)
     
     #read in the topic data and plot it
-    df_plot_features_and_tweets = pd.read_csv('./data/tweet_topics.csv, index_col = 0)
+    df_plot_features_and_tweets = pd.read_csv('./data/tweet_topics.csv', index_col = 0)
                             
     ######################                        
                             
