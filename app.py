@@ -16,6 +16,7 @@ from bokeh.models import HoverTool
 from bokeh.io import output_file
 from bokeh.plotting import figure, ColumnDataSource
 import numpy as np
+from gensim import corpora, models
 
 from tweet_miner import fetch_tweets 
 #from rq import Queue
@@ -157,46 +158,30 @@ def home():
                                table_info = table_info)
         
         
-        
-        
-        
-        #return data_truncated_address
-        
-        #object_key = '%i_truncated.csv' % time_index
-        #full_address = './data/' + object_key
-        #s3client.download_file(bucket_name, object_key, full_address)
-        
-#        #send the data to the html table
-#        df_tweets = pd.read_csv(full_address, index_col = 0)
-#        
-#        #return "hello after csv read download %i" % len(df_tweets)
-#        return render_template('home.html', 
-#                               table=df_tweets.to_html(classes = 'tweets', index = False), 
-#                               csv_link_text = 'Download full raw data',
-#                               csv_link = 'https://s3.amazonaws.com/disasters-on-twitter/1473879560.csv',
-#                               github=github)
-
-        #df_tweets = pd.read_csv('https://s3.amazonaws.com/disasters-on-twitter/1475037364_truncated.csv', index_col = 0)
-        #return render_template('home.html', 
-        #                       table=df_tweets.to_html(classes = 'tweets', index = False), 
-        #                       csv_link_text = 'Download full raw data',
-        #                       csv_link = 'https://s3.amazonaws.com/disasters-on-twitter/1475037364.csv',
-        #                       github=github)
+@app.route('/about', methods=['GET'])
+def about():    
+    
+    #load in the topics and extract text
+    lsi = models.LsiModel.load('./model/model.lsi')
+    n_topics = 10
+    n_words = 10
+    topics = lsi.print_topics(n_topics, num_words = n_words)
     
     
+    return render_template('about.html', 
+                           github=github, 
+                           topic_0_text=topics[0][1],
+                           topic_1_text=topics[1][1], 
+                           topic_2_text=topics[2][1], 
+                           topic_3_text=topics[3][1], 
+                           topic_4_text=topics[4][1], 
+                           topic_5_text=topics[5][1], 
+                           topic_6_text=topics[6][1], 
+                           topic_7_text=topics[7][1], 
+                           topic_8_text=topics[8][1], 
+                           topic_9_text=topics[9][1])
     
-#        df_tweets = pd.read_csv('https://s3.amazonaws.com/disasters-on-twitter/1475037364.csv', index_col = 0)
-#        return render_template('home.html', 
-#                               table=df_tweets.to_html(classes = 'tweets', index = False), 
-#                               csv_link_text = 'Download raw data',
-#                               csv_link = 'https://s3.amazonaws.com/disasters-on-twitter/1475037364.csv',
-#                               github=github)
-    
         
-        
-        #csv_link = 'https://s3.amazonaws.com/disasters-on-twitter/1473879560.csv',
-        
-        #csv_link = ('https://s3.amazonaws.com/disasters-on-twitter/%i.csv' % time_index),
 
 if __name__ == '__main__':
     app.debug = True
