@@ -18,6 +18,10 @@ from bokeh.plotting import figure, ColumnDataSource
 import numpy as np
 from gensim import corpora, models
 
+from bokeh.models.widgets import RadioButtonGroup, Paragraph
+from bokeh.layouts import column, row
+from bokeh.models import CustomJS #NOT NEEDED?
+
 from tweet_miner import fetch_tweets 
 #from rq import Queue
 #from worker import conn
@@ -65,19 +69,6 @@ def home():
         file_date_list.sort()        
         time_index = file_date_list[-1][0]
         time_string = 'Extracted data mined on ' + file_date_list[-1][1]
-        
-        #file_list.sort()
-        #time_index = file_list[-1] #this will not ever generate an index out of range issue
-        
-        #make sure everything is readable
-        #object_key = '%i.csv' % time_index
-        #s3client.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=object_key)
-        #object_key = '%i_truncated.csv' % time_index
-        #s3client.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=object_key)
-        #object_key = '%i_stats.csv' % time_index
-        #s3client.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=object_key)
-        #object_key = '%i_keyword_stats.csv' % time_index
-        #s3client.put_object_acl(ACL='public-read', Bucket=bucket_name, Key=object_key)
         
         #get addresses for the various data sets
         data_address = 'https://s3.amazonaws.com/disasters-on-twitter/%i.csv' % time_index
@@ -160,13 +151,123 @@ def home():
         
 @app.route('/about', methods=['GET'])
 def about():    
-    
     #load in the topics and extract text
     lsi = models.LsiModel.load('./models/model.lsi')
     n_topics = 10
     n_words = 10
     topics = lsi.print_topics(n_topics, num_words = n_words)
     
+    #read in the topic data and plot it
+    df_plot_features_and_tweets = pd.read_csv('./data/tweet_topics.csv, index_col = 0)
+                            
+    ######################                        
+                            
+    source = ColumnDataSource(
+        data=dict(
+            color = df_plot_features_and_tweets['color'].tolist(),
+            topic0 = df_plot_features_and_tweets['0'].tolist(),
+            topic1 = df_plot_features_and_tweets['1'].tolist(),
+            topic2 = df_plot_features_and_tweets['2'].tolist(),
+            topic3 = df_plot_features_and_tweets['3'].tolist(),
+            topic4 = df_plot_features_and_tweets['4'].tolist(),
+            topic5 = df_plot_features_and_tweets['5'].tolist(),
+            topic6 = df_plot_features_and_tweets['6'].tolist(),
+            topic7 = df_plot_features_and_tweets['7'].tolist(),
+            topic8 = df_plot_features_and_tweets['8'].tolist(),
+            topic9 = df_plot_features_and_tweets['9'].tolist(),
+            x = df_plot_features_and_tweets['0'].tolist(),
+            y = df_plot_features_and_tweets['1'].tolist(),
+        )
+    )
+
+    plot = figure(title='2D topic space', tools='box_zoom,wheel_zoom,pan,reset', 
+                  plot_width=600, plot_height=600, toolbar_location="above", x_range=(-0.8, 0.8), y_range=(-0.8, 0.8))
+    plot.scatter('x', 'y', fill_color = 'color', fill_alpha=0.6, line_color=None, source = source)
+    plot.scatter([-100.0], [-100.0], fill_color = '#d53e4f', fill_alpha=0.6, line_color=None, legend = 'Disaster')
+    plot.scatter([-100.0], [-100.0], fill_color = '#3288bd', fill_alpha=0.6, line_color=None, legend = 'Not Disaster')
+
+    plot.xaxis.axis_label = 'Topic x'
+    plot.yaxis.axis_label = 'Topic y'
+
+
+    callback_1 = CustomJS(args=dict(source=source, plot=plot), code="""
+            var data = source.get('data');
+            var f = cb_obj.get('active');
+
+            if (f === 0)
+            {data['x'] = data['topic0'];}
+            else if (f === 1)
+            {data['x'] = data['topic1'];}
+            else if (f === 2)
+            {data['x'] = data['topic2'];}
+            else if (f === 3)
+            {data['x'] = data['topic3'];}
+            else if (f === 4)
+            {data['x'] = data['topic4'];}
+            else if (f === 5)
+            {data['x'] = data['topic5'];}
+            else if (f === 6)
+            {data['x'] = data['topic6'];}
+            else if (f === 7)
+            {data['x'] = data['topic7'];}
+            else if (f === 8)
+            {data['x'] = data['topic8'];}
+            else if (f === 9)
+            {data['x'] = data['topic9'];}
+
+            source.trigger('change');
+            plot.trigger('change');
+        """)
+
+    callback_2 = CustomJS(args=dict(source=source, plot=plot), code="""
+            var data = source.get('data');
+            var f = cb_obj.get('active')
+
+            if (f === 0)
+            {data['y'] = data['topic0'];}
+            else if (f === 1)
+            {data['y'] = data['topic1'];}
+            else if (f === 2)
+            {data['y'] = data['topic2'];}
+            else if (f === 3)
+            {data['y'] = data['topic3'];}
+            else if (f === 4)
+            {data['y'] = data['topic4'];}
+            else if (f === 5)
+            {data['y'] = data['topic5'];}
+            else if (f === 6)
+            {data['y'] = data['topic6'];}
+            else if (f === 7)
+            {data['y'] = data['topic7'];}
+            else if (f === 8)
+            {data['y'] = data['topic8'];}
+            else if (f === 9)
+            {data['y'] = data['topic9'];}
+
+            source.trigger('change');
+            plot.trigger('change');
+        """)
+
+    radio_button_topic_1 = RadioButtonGroup(
+            labels=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], active=0, width = 600, callback=callback_1)
+    radio_button_topic_2 = RadioButtonGroup(
+            labels=['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'], active=1, width = 600, callback=callback_2)
+
+    #hover tool for the plot
+    #hover = plot.select(dict(type=HoverTool))
+    #hover.tooltips = [('Tweet', '@tweets')]
+
+    text_topic_1 = Paragraph(text="Topic x:", width = 60)
+    text_topic_2 = Paragraph(text="Topic y:", width = 60)
+
+    options_1 = row(text_topic_1, radio_button_topic_1)
+    options_2 = row(text_topic_2, radio_button_topic_2)
+
+    layout = column(options_1, options_2, plot)                        
+    
+    topics_script, topics_div = components(layout)                                          
+                            
+    ######################                        
     
     return render_template('about.html', 
                            github=github, 
@@ -179,7 +280,9 @@ def about():
                            topic_6_text=topics[6][1], 
                            topic_7_text=topics[7][1], 
                            topic_8_text=topics[8][1], 
-                           topic_9_text=topics[9][1])
+                           topic_9_text=topics[9][1], 
+                           topics_script = topics_script,
+                           topics_div = topics_div,)
     
         
 
