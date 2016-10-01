@@ -162,7 +162,7 @@ def home():
 def about():    
     
     #load in the topics and extract text
-    lsi = models.LsiModel.load('./model/model.lsi')
+    lsi = models.LsiModel.load('./models/model.lsi')
     n_topics = 10
     n_words = 10
     topics = lsi.print_topics(n_topics, num_words = n_words)
